@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import lombok.Data;
 
 @Entity
@@ -26,8 +27,12 @@ public class Book {
 	private String isbn;
 	
 	@ManyToMany
-	@JoinTable(name = "authors_books",
-				joinColumns = { @JoinColumn(name = "book_id")},
-				inverseJoinColumns = { @JoinColumn(name = "author_id")})
+	@JoinTable(name = "author_book",
+				joinColumns = @JoinColumn(name = "book_id"),
+				inverseJoinColumns = @JoinColumn(name = "author_id"))
 	private Set<Author> authors = new HashSet<>();
+	
+	@ManyToOne
+	@JoinColumn(name = "publisher_id")
+	private Publisher publisher;
 }

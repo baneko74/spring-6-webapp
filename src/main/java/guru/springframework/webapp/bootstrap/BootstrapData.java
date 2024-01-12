@@ -7,18 +7,24 @@ import org.springframework.stereotype.Component;
 
 import guru.springframework.webapp.domain.Author;
 import guru.springframework.webapp.domain.Book;
+import guru.springframework.webapp.domain.Publisher;
 import guru.springframework.webapp.repositories.AuthorRepository;
 import guru.springframework.webapp.repositories.BookRepository;
+import guru.springframework.webapp.repositories.PublisherRepository;
 
 @Component
 public class BootstrapData implements CommandLineRunner {
 	
 	private final AuthorRepository authorRepo;
 	private final BookRepository bookRepo;
+	private final PublisherRepository publisherRepo;
 	
-	public BootstrapData(AuthorRepository authorRepo, BookRepository bookRepo) {
+	public BootstrapData(AuthorRepository authorRepo, 
+						BookRepository bookRepo, 
+						PublisherRepository publisherRepo) {
 		this.authorRepo = authorRepo;
 		this.bookRepo = bookRepo;
+		this.publisherRepo = publisherRepo;
 	}
 
 	@Override
@@ -35,27 +41,38 @@ public class BootstrapData implements CommandLineRunner {
 		Book bookSaved = bookRepo.save(book);
 		
 		Author rod = new Author();
-		eric.setFirstName("Rod");
-		eric.setLastName("Johnson");
+		rod.setFirstName("Rod");
+		rod.setLastName("Johnson");
 		
 		Book book1 = new Book();
-		book.setTitle("J2EE Development without EJB");
-		book.setIsbn("5475785");
+		book1.setTitle("J2EE Development without EJB");
+		book1.setIsbn("5475785");
 		
 		Author rodSaved = authorRepo.save(rod);
 		Book book1Saved = bookRepo.save(book1);
 		
-		ericSaved.getBooks().add(book);
-		//book.getAuthors().add(eric);
-		rodSaved.getBooks().add(book1);
-		//book1.getAuthors().add(rodSaved);
+		ericSaved.addBook(bookSaved);
+		rodSaved.addBook(book1Saved);
 		
+		Publisher publisher = new Publisher();
+		publisher.setPublisherName("NOLIT");
+		publisher.setAddress("123 Main");
+		Publisher savedPublisher = publisherRepo.save(publisher);
+		
+		bookSaved.setPublisher(savedPublisher);
+		book1Saved.setPublisher(savedPublisher);
+	
 		authorRepo.save(ericSaved);
 		authorRepo.save(rodSaved);
+		bookRepo.save(bookSaved);
+		bookRepo.save(book1Saved);
 		
 		System.out.println("In Bootstrap");
 		System.out.println("Author count: " + authorRepo.count());
 		System.out.println("Book count: " + bookRepo.count());
+		
+		System.out.println("Publisher count: " + publisherRepo.count());
+		
 	}
 
 	

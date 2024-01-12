@@ -8,29 +8,30 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import lombok.Data;
 
 @Entity
 @Data
-public class Author {
-	
+public class Publisher {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	@Column(name = "first_name")
-	private String firstName;
 	
-	@Column(name = "last_name")
-	private String lastName;
+	@Column(name = "publisher_name")
+	private String publisherName;
 	
-	@ManyToMany(mappedBy = "authors")
+	private String address;
+	private String city;
+	private String state;
+	private String zipCode;
+	
+	@OneToMany(mappedBy = "publisher", orphanRemoval = true)
 	private Set<Book> books = new HashSet<>();
 	
 	public void addBook(Book book) {
 		this.books.add(book);
-		book.getAuthors().add(this);
+		book.setPublisher(this);
 	}
-	
-
 }
